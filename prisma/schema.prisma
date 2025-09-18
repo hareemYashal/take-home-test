@@ -1,0 +1,40 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Shop {
+  id          String   @id @default(uuid()) @db.Uuid
+  shopDomain  String   @unique @map("shop_domain")
+  accessToken String   @map("access_token")
+  apiScope    String   @map("api_scope")
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt   DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  // Relations
+  auditLogs AuditLog[]
+
+  @@map("shops")
+}
+
+model AuditLog {
+  id        String    @id @default(uuid()) @db.Uuid
+  actor     String    // "server"
+  action    String    // "oauth_success" or "oauth_failure"
+  shopId    String?   @map("shop_id") @db.Uuid
+  meta      Json?     // Additional metadata
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz
+
+  // Relations
+  shop Shop? @relation(fields: [shopId], references: [id])
+
+  @@map("audit_log")
+}

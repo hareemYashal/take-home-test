@@ -1,0 +1,220 @@
+{
+  "info": {
+    "name": "Shopify Analytics MVP API",
+    "description": "API collection for Shopify Analytics MVP - DTC Ecommerce Take-Home Test",
+    "version": "1.0.0",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Get Shop Metrics",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"Response has correct structure\", function () {",
+              "    const jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.have.property('shopId');",
+              "    pm.expect(jsonData).to.have.property('fromDate');",
+              "    pm.expect(jsonData).to.have.property('toDate');",
+              "    pm.expect(jsonData).to.have.property('ordersCount');",
+              "    pm.expect(jsonData).to.have.property('grossRevenue');",
+              "    pm.expect(jsonData).to.have.property('currency');",
+              "    pm.expect(jsonData).to.have.property('avgOrderValue');",
+              "    pm.expect(jsonData).to.have.property('refundedAmount');",
+              "    pm.expect(jsonData).to.have.property('netRevenue');",
+              "});",
+              "",
+              "pm.test(\"Numeric fields are numbers\", function () {",
+              "    const jsonData = pm.response.json();",
+              "    pm.expect(jsonData.ordersCount).to.be.a('number');",
+              "    pm.expect(jsonData.grossRevenue).to.be.a('number');",
+              "    pm.expect(jsonData.avgOrderValue).to.be.a('number');",
+              "    pm.expect(jsonData.refundedAmount).to.be.a('number');",
+              "    pm.expect(jsonData.netRevenue).to.be.a('number');",
+              "});",
+              "",
+              "pm.test(\"Date fields are valid ISO strings\", function () {",
+              "    const jsonData = pm.response.json();",
+              "    pm.expect(new Date(jsonData.fromDate)).to.be.a('date');",
+              "    pm.expect(new Date(jsonData.toDate)).to.be.a('date');",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/shops/{{shop_id}}/metrics",
+          "host": ["{{base_url}}"],
+          "path": ["api", "shops", "{{shop_id}}", "metrics"]
+        },
+        "description": "Fetch comprehensive metrics for a connected Shopify store for the last 30 days"
+      },
+      "response": [
+        {
+          "name": "Success Response",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/shops/f41c5eaf-e8ce-44e5-a652-b991dcf570fc/metrics",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "shops", "f41c5eaf-e8ce-44e5-a652-b991dcf570fc", "metrics"]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n  \"shopId\": \"f41c5eaf-e8ce-44e5-a652-b991dcf570fc\",\n  \"fromDate\": \"2024-08-19T19:00:00.000Z\",\n  \"toDate\": \"2024-09-18T18:59:59.999Z\",\n  \"ordersCount\": 5,\n  \"grossRevenue\": 1250.00,\n  \"currency\": \"USD\",\n  \"avgOrderValue\": 250.00,\n  \"refundedAmount\": 75.00,\n  \"netRevenue\": 1175.00\n}"
+        },
+        {
+          "name": "Zero Metrics Response",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/shops/f41c5eaf-e8ce-44e5-a652-b991dcf570fc/metrics",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "shops", "f41c5eaf-e8ce-44e5-a652-b991dcf570fc", "metrics"]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n  \"shopId\": \"f41c5eaf-e8ce-44e5-a652-b991dcf570fc\",\n  \"fromDate\": \"2024-08-19T19:00:00.000Z\",\n  \"toDate\": \"2024-09-18T18:59:59.999Z\",\n  \"ordersCount\": 0,\n  \"grossRevenue\": 0,\n  \"currency\": \"USD\",\n  \"avgOrderValue\": 0,\n  \"refundedAmount\": 0,\n  \"netRevenue\": 0\n}"
+        }
+      ]
+    },
+    {
+      "name": "Get Shop Metrics - Shop Not Found",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 404\", function () {",
+              "    pm.response.to.have.status(404);",
+              "});",
+              "",
+              "pm.test(\"Error response has correct structure\", function () {",
+              "    const jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.have.property('error');",
+              "    pm.expect(jsonData.error).to.equal('Shop not found');",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/shops/nonexistent-shop-id/metrics",
+          "host": ["{{base_url}}"],
+          "path": ["api", "shops", "nonexistent-shop-id", "metrics"]
+        },
+        "description": "Test error handling when shop ID doesn't exist"
+      },
+      "response": [
+        {
+          "name": "Shop Not Found",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/shops/nonexistent-shop-id/metrics",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "shops", "nonexistent-shop-id", "metrics"]
+            }
+          },
+          "status": "Not Found",
+          "code": 404,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n  \"error\": \"Shop not found\"\n}"
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3000",
+      "description": "Base URL for local development"
+    },
+    {
+      "key": "shop_id",
+      "value": "f41c5eaf-e8ce-44e5-a652-b991dcf570fc",
+      "description": "Sample shop ID from your connected store"
+    },
+    {
+      "key": "production_url",
+      "value": "https://your-app.vercel.app",
+      "description": "Production URL on Vercel"
+    }
+  ]
+}
