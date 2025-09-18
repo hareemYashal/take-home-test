@@ -1,7 +1,3 @@
-interface RedactableObject {
-  [key: string]: any
-}
-
 const SENSITIVE_KEYS = [
   'access_token',
   'accessToken',
@@ -13,7 +9,7 @@ const SENSITIVE_KEYS = [
   'auth'
 ]
 
-export function redactSecrets(obj: any, visited = new WeakSet(), depth = 0): any {
+export function redactSecrets(obj: unknown, visited = new WeakSet(), depth = 0): unknown {
   // Prevent infinite recursion with depth limit and circular reference detection
   if (depth > 10 || !obj || typeof obj !== 'object') {
     return obj
@@ -40,30 +36,32 @@ export function redactSecrets(obj: any, visited = new WeakSet(), depth = 0): any
   }
 
   // Handle regular objects
-  const redacted: { [key: string]: any } = {}
+  const redacted: { [key: string]: unknown } = {}
+  const objRecord = obj as Record<string, unknown>
 
-  for (const key in obj) {
-    if (!obj.hasOwnProperty(key)) continue
+  for (const key in objRecord) {
+    if (!Object.prototype.hasOwnProperty.call(objRecord, key)) continue
     
     const lowerKey = key.toLowerCase()
-    
+    const value = objRecord[key]
+
     if (SENSITIVE_KEYS.some(sensitiveKey => lowerKey.includes(sensitiveKey))) {
-      if (typeof obj[key] === 'string' && obj[key].length > 0) {
-        redacted[key] = `${obj[key].substring(0, 4)}****`
+      if (typeof value === 'string' && value.length > 0) {
+        redacted[key] = `${value.substring(0, 4)}****`
       } else {
         redacted[key] = '****'
       }
-    } else if (typeof obj[key] === 'object' && obj[key] !== null) {
-      redacted[key] = redactSecrets(obj[key], visited, depth + 1)
+    } else if (typeof value === 'object' && value !== null) {
+      redacted[key] = redactSecrets(value, visited, depth + 1)
     } else {
-      redacted[key] = obj[key]
+      redacted[key] = value
     }
   }
 
   return redacted
 }
 
-export function safeLog(message: string, data?: any) {
+export function safeLog(message: string, data?: unknown) {
   if (data) {
     console.log(message, redactSecrets(data))
   } else {
@@ -71,7 +69,7 @@ export function safeLog(message: string, data?: any) {
   }
 }
 
-export function safeError(message: string, error?: any) {
+export function safeError(message: string, error?: unknown) {
   if (error) {
     console.error(message, redactSecrets(error))
   } else {

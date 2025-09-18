@@ -5,9 +5,9 @@ import { getLast30DaysRange } from '@/lib/date-utils'
 import { safeLog, safeError } from '@/lib/security'
 
 interface RouteParams {
-  params: {
+  params: Promise<{
     id: string
-  }
+  }>
 }
 
 export async function GET(request: NextRequest, { params }: RouteParams) {

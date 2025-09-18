@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { ConnectForm } from '@/components/shopify/connect-form'
 import { MetricsDisplay } from '@/components/shopify/metrics-display'
-import { Alert } from '@/components/ui/alert'
 
 // Client Component - handles all interactive functionality
 export function ShopifyAnalyticsClient() {

@@ -53,7 +53,7 @@ export function MetricsDisplay({ shopId, onDisconnect, onError }: MetricsDisplay
 
   useEffect(() => {
     loadMetrics()
-  }, [shopId])
+  }, [shopId]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const formatCurrency = (amount: number, currency: string = 'CAD') => {
     return new Intl.NumberFormat('en-CA', {

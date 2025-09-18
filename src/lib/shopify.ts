@@ -42,7 +42,7 @@ export class ShopifyClient {
     this.accessToken = accessToken
   }
 
-  private getApiUrl(endpoint: string): string {
+  private getApiUrl(): string {
     return `https://${this.shopDomain}/admin/api/2023-10/graphql.json`
   }
 
